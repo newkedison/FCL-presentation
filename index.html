@@ -321,9 +321,8 @@
 
       <p>Array包含以下常用属性:</p>
       <ul>
-        <li><strong style="color:#F85">ID</strong> -- 每个Table的唯一标识, 允许包含字符, 数字, 下划线</li>
-        <li><strong style="color:#F85">RowCount</strong> -- 总行数</li>
-        <li><strong style="color:#F85">ColumnCount</strong> -- 总列数</li>
+        <li><strong style="color:#F85">ID</strong> -- 每个Array的唯一标识, 允许包含字符, 数字, 下划线</li>
+        <li><strong style="color:#F85">Size</strong> -- 元素个数</li>
       </ul>
     </section>
     <section style="width:100%; text-align:left; font-size:30px">
@@ -430,7 +429,7 @@
       <h2>非对称加密</h2>
 
       <p>
-        非对称加密需要一对密钥, 分别称之为公钥和密钥, 流量计算机需要自动生成一对密钥,
+        非对称加密需要一对密钥, 分别称之为公钥和私钥, 流量计算机需要自动生成一对密钥,
         然后把公钥显示出来, 任何与流量计算机通讯的设备, 使用流量计算机的公钥对信息进行加密,
         然后发送给流量计算机, 流量计算机通过自己的私钥进行解密, 获得实际的内容.
         流量计算机回复数据时, 使用私钥加密, 然后发送给客户端, 客户端接收后用流量计算机的公钥解密,
