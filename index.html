@@ -1,1 +1,415 @@
-<h1>Hello world</h1>
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8" />
+
+    <title>流量计算机软件框架设计</title>
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <link rel="stylesheet" href="css/reveal.min.css" />
+    <link rel="stylesheet" href="css/theme/night.css" id="theme" />
+
+    <!-- For syntax highlighting -->
+<link rel="stylesheet" href="lib/css/zenburn.css" />
+<style>
+  .reveal p {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  .badge {
+    position: relative;
+
+    width: 400px;
+  }
+
+  .rc {
+    font: 26px Monaco, MonoSpace;
+    height: 400px;
+    position: absolute;
+    width: 20px;
+    left: 0;
+    top: 0;
+    -webkit-transform-origin: bottom center;
+    -moz-transform-origin: bottom center;
+    -ms-transform-origin: bottom center;
+    -o-transform-origin: bottom center;
+    transform-origin: bottom center;
+  }
+
+  .char1 {
+    -webkit-transform: rotate(-47deg);
+    -moz-transform: rotate(-47deg);
+    -ms-transform: rotate(-47deg);
+    -o-transform: rotate(-47deg);
+    transform: rotate(-47deg);
+  }
+
+  .char2 {
+    -webkit-transform: rotate(-29deg);
+    -moz-transform: rotate(-29deg);
+    -ms-transform: rotate(-29deg);
+    -o-transform: rotate(-29deg);
+    transform: rotate(-29deg);
+  }
+
+  .char3 {
+    -webkit-transform: rotate(-11deg);
+    -moz-transform: rotate(-11deg);
+    -ms-transform: rotate(-11deg);
+    -o-transform: rotate(-11deg);
+    transform: rotate(-11deg);
+  }
+
+  .char4 {
+    -webkit-transform: rotate(7deg);
+    -moz-transform: rotate(7deg);
+    -ms-transform: rotate(7deg);
+    -o-transform: rotate(7deg);
+    transform: rotate(7deg);
+  }
+
+  .char5 {
+    -webkit-transform: rotate(25deg);
+    -moz-transform: rotate(25deg);
+    -ms-transform: rotate(25deg);
+    -o-transform: rotate(25deg);
+    transform: rotate(25deg);
+  }
+
+  .char6 {
+    -webkit-transform: rotate(43deg);
+    -moz-transform: rotate(43deg);
+    -ms-transform: rotate(43deg);
+    -o-transform: rotate(43deg);
+    transform: rotate(43deg);
+  }
+</style>
+
+  <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+  if( window.location.search.match( /print-pdf/gi ) ) {
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = 'css/print/pdf.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  }
+</script>
+
+<!--[if lt IE 9]>
+  <script src="lib/js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="reveal">
+
+      <!-- Any section element inside of this container is displayed as a slide -->
+<div class="slides">
+  
+  <section data-markdown>
+    <script type="text/template">
+      #流量计算机软件
+
+      #框架设计
+
+      ##### by 罗健忠
+    </script>
+  </section>
+  
+  <section data-markdown style="width:100%; font-size:50px">
+    <script type="text/template">
+      ##设计目标
+
+      * 分布式设计, 模块之间高度分离
+      * 面向数据的交互方式
+      * 基于TCP Socket的通讯模式
+      * 扩展能力可适应未来至少3年的发展需求
+      * 模块可独立测试, 接口函数可较方便的测试
+          * 硬件相关的部分与硬件无关的部分分离
+          * 模块之间的交互采用唯一标准化接口
+          * 接口函数有详细说明
+    </script>
+  </section>
+  
+  <section>
+    <section data-markdown style="width:100%;">
+      <script type="text/template">
+        <p style="font-size:100px">高度分离的</p>
+        <p style="font-size:160px; color:#E95">模&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;块</p>
+      </script>
+    </section>
+    <section data-markdown style="width:100%; font-size:50px">
+      <script type="text/template">
+        ##模块划分
+
+        * Data Center -- 数据中心, 所有数据的来源
+        * Display -- 界面显示
+        * IOManager -- 硬件接口处理
+        * Storage -- 记录存储
+        * Web Server -- 网页服务器
+        * 其他外部模块
+            * 上位机/SCADA
+            * App(Android/iOS)
+      </script>
+    </section>
+    <section data-markdown style="width:100%; font-size:40px; text-align:left">
+      <script type="text/template">
+        ##Data Center模块
+
+        * 权限认证
+        * 实时流量计算
+        * 参数存储
+        * 提供数据读取/写入接口
+        * 参数修改记录生成
+        * 实时报警
+      </script>
+    </section>
+    <section data-markdown style="width:100%; font-size:40px; text-align:left">
+      <script type="text/template">
+        ##Display模块
+
+        * 实时数据显示
+        * 部分软件参数修改
+        * 报警信息显示
+        * 日志记录显示
+      </script>
+    </section>
+    <section data-markdown style="width:100%; font-size:40px; text-align:left">
+      <script type="text/template">
+        ##IOManager模块
+
+        * 硬件组态信息读取
+        * 硬件接口通讯
+        * 计算参数转换
+        * 上下位机通讯
+      </script>
+    </section>
+    <section data-markdown style="width:100%; font-size:40px; text-align:left">
+      <script type="text/template">
+        ##Storage模块
+
+        * 读取实时流量数据, 定期保存
+        * 读取实时报警记录, 定期保存
+        * 读取参数修改记录, 定期保存
+        * 历史记录下载
+        * 报警记录下载
+        * 参数修改记录下载
+      </script>
+    </section>
+    <section data-markdown style="width:100%; font-size:40px; text-align:left">
+      <script type="text/template">
+        ##Web Server模块
+
+        * 读取实时数据, 并提供Web界面让用户查看
+        * 通过表格或者图表的方式展现不同的数据
+        * 提供设置参数的Web界面, 允许修改部分参数
+      </script>
+    </section>
+    <section data-markdown style="width:100%; font-size:40px; text-align:left">
+      <script type="text/template">
+        ##其他模块
+
+        * 上位机
+        * 手机客户端
+        * 无线热点
+      </script>
+    </section>
+  </section>
+  
+  <section>
+    <section data-markdown style="width:100%;">
+      <script type="text/template">
+        <p style="font-size:100px">以</p>
+        <p style="font-size:160px; color:cyan">数据</p>
+        <p style="font-size:100px">为中心</p>
+      </script>
+    </section>
+    <section data-markdown style="width:100%; text-align:left">
+      <script type="text/template">
+        ##数据格式 -- Variable(变量)
+
+        * <strong style="color:#F85">ID</strong>: -- 每个变量的唯一标识, 允许包含字母, 数字, 下划线. 另外可以包含以下特殊符号:
+
+            ```
+            #号 -- 在后面加上数字用于索引数组下标, 0-base
+            @号 -- 在后面加数字用于索引某一台流量计, 1-base
+            ```
+
+        例如:
+        > <strong style="color:cyan">sound_time#0@1</strong> 表示第一台流量计的声时0
+
+        * <strong style="color:#F85">Name</strong> -- 用于显示的名称, 可重复. 允许包含字母, 数字和下划线. 这个名称仅作为建议名称, 可用于界面显示或者数据库字段名等, 但不是必须使用这个名字.
+        
+        * <strong style="color:#F85">Max</strong> -- 允许设置的最大值
+        * <strong style="color:#F85">Min</strong> -- 允许设置的最小值
+        * <strong style="color:#F85">Value</strong> -- 当前值
+      </script>
+    </section>
+    <section data-markdown style="width:100%; text-align:left; font-size:30px">
+      <script type="text/template">
+        ##数据格式 -- Region(预定义数据表)
+
+        为了方便对同类数据进行连续访问, 程序会预定义一些数据表, 这里称为Region.
+        一个Region就是一个二维表, 可通过行(row)和列(column)属性来定位一个变量,
+        亦可整行或者整列的访问
+
+        * <strong style="color:#F85">ID</strong> -- 每个Region的唯一标识,
+        允许包含字符, 数字, 下划线
+        * <strong style="color:#F85">Name</strong> -- Region名称, 同样也仅作为建议
+        * <strong style="color:#F85">RowCount</strong> -- 总行数
+        * <strong style="color:#F85">ColumnCount</strong> -- 总列数
+
+      </script>
+    </section>
+    <section data-markdown style="width:100%; text-align:left; font-size:30px">
+      <script type="text/template">
+        ##数据格式 -- Table(自定义数据表)
+
+        Table是可以由用户自定义的二维表, 可以从预订的Region中切取连续的一片区域来构建一个Table,
+        也可以自定义Table中的每个位置对应的变量
+        
+        Table是一个临时表, 其生命周期与链接相同, 也就是说
+
+        1. 每次建立链接后, client需要重新发送一次Table的定义
+        2. 不同的链接之间的Table不共用, 互不影响
+        3. 当链接以任何原因断开后, 这个Table的定义将自动销毁
+
+        <p>Table包含以下常用属性:</p>
+
+        * <strong style="color:#F85">ID</strong> -- 每个Table的唯一标识,
+        允许包含字符, 数字, 下划线
+        * <strong style="color:#F85">RowCount</strong> -- 总行数
+        * <strong style="color:#F85">ColumnCount</strong> -- 总列数
+      </script>
+    </section>
+    <section style="width:100%; text-align:left; font-size:30px">
+      <h2>数据格式 -- Array(自定义数组)</h2>
+
+      <p>Array与Table类似, 均是用户自定义的数据表, 区别在于Table是二维表,
+        而Array是一维表, 同样可以从Region截取(可按行或列截取), 或者自定义每个变量.</p>
+
+      <p>其生命周期和Table一样, 都是与链接相同.</p>
+
+      <p>Array包含以下常用属性:</p>
+      <ul>
+        <li><strong style="color:#F85">ID</strong> -- 每个Table的唯一标识, 允许包含字符, 数字, 下划线</li>
+        <li><strong style="color:#F85">RowCount</strong> -- 总行数</li>
+        <li><strong style="color:#F85">ColumnCount</strong> -- 总列数</li>
+      </ul>
+    </section>
+    <section style="width:100%; text-align:left; font-size:30px">
+      <h2>数据格式 -- Record(记录型数据)</h2>
+
+      <p>前面定义的变量均是单个数值, 涵盖了各种实时数据和参数.
+      但是系统中还需要存在一些记录型的数据, 一条Record一般由多个不同的数据组合而成,
+      但是在传输时需要将其作为一个整体来看待</p>
+
+      <p>记录型数据包括历史记录, 参数修改记录等, 其格式可能会不同, 也可能随时间的推移而改变,
+      所以需要用一个版本号来标识其类型</p>
+
+      <p>Record包含以下常用属性:</p>
+      <ul>
+        <li><strong style="color:#F85">Type</strong> -- 记录类型, 用于区分是何种记录</li>
+        <li><strong style="color:#F85">Version</strong> -- 记录格式的版本号, 不同版本号之间须进行兼容性处理</li>
+        <li><strong style="color:#F85">Time</strong> -- 记录产生的时间</li>
+        <li><strong style="color:#F85">Data</strong> -- 二进制格式的记录内容, 须根据格式版本号进行解析</li>
+      </ul>
+    </section>
+  </section>
+  
+  
+  <section>
+    <section style="width:100%;">
+      <span style="font-size:100px">以</span>
+      <span class="badge" style="font-size:160px; color:#C92; left:260px">
+        <span class="char1 rc">s</span>
+        <span class="char2 rc">o</span>
+        <span class="char3 rc">c</span>
+        <span class="char4 rc">k</span>
+        <span class="char5 rc">e</span>
+        <span class="char6 rc">t</span>
+      </span>
+      <span style="font-size:100px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;为桥梁</span>
+    </section>
+
+    <section style="width:100%; text-align:left; font-size:30px">
+      <h2>进程间通信常见方法</h2>
+
+      <ul>
+        <li><strong style="color:#F85">共享内存</strong><br />
+          优点: 数据传输效率高, 多个进程可同时使用同一片共享内存<br />
+          缺点: 使用时需考虑同步, 必须在同一主机
+        </li>
+        <li><strong style="color:#F85">邮箱/信箱</strong><br />
+          优点: 无需考虑同步<br />
+          缺点: 数据传输效率极低, 必须在同一主机
+        </li>
+        <li><strong style="color:#F85">文件</strong><br />
+          优点: 实现较方便<br />
+          缺点: 需考虑并发操作, 安全性低, 跨主机较难
+        </li>
+        <li><strong style="color:#F85">Socket</strong><br />
+          优点: 可跨主机通信, 传输速率高, 可靠性高<br />
+          缺点: 实现较复杂
+        </li>
+      </ul>
+    </section>
+    <section style="width:100%; text-align:left; font-size:30px">
+      <h2>Socket通信的安全性</h2>
+
+      相对其他几种方式而言, Socket通信的安全性低于共享内存, 和文件差不多.
+      如果数据没有经过保护的话, 比较容易被监听和修改. 但是, 由于网络通讯的普及,
+      各种安全通讯的方法也得以推广和验证. 目前, 从理论上来说, 只要对数据包进行合理的保护,
+      通过网络通讯的安全性基本可以保证.
+    </section>
+  </section>
+  
+</div>
+
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.min.js"></script>
+
+    <script>
+
+    // Full list of configuration options available here:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+
+        theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+        transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+        width: 1024,
+
+        // Parallax scrolling
+        // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+        // parallaxBackgroundSize: '2100px 900px',
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+          { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+          { src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+        ]
+    });
+
+  </script>
+
+</body>
+</html>
